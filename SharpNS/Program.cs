@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using SharpNS.HostedServices;
 
 namespace SharpNS
@@ -17,6 +18,10 @@ namespace SharpNS
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureLogging(options =>
+                {
+                    options.AddConsole();
                 })
                 .ConfigureServices(services =>
                 {
