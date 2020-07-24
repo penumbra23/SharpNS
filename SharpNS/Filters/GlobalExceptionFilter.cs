@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using SharpNS.Exceptions;
 using SharpNS.Models.API;
 
@@ -29,7 +31,22 @@ namespace SharpNS.Filters
                 case ApiException apiEx:
                     code = apiEx.StatusCode;
                     err.Message = apiEx.Message;
-                    err.Type = apiEx.ErrorType;
+                    err.Type = ApiException.GetErrorType(apiEx.StatusCode);
+                    break;
+                case DbUpdateException updateEx:
+                    switch((updateEx.InnerException as SqliteException).SqliteErrorCode)
+                    {
+                        case 19:
+                            code = 409;
+                            err.Type = ApiException.GetErrorType(409);
+                            err.Message = "Record with DNS domain already exists.";
+                            break;
+                        default:
+                            code = 500;
+                            err.Type = "DatabaseError";
+                            err.Message = "Internal database error.";
+                            break;
+                    }
                     break;
             }
 
