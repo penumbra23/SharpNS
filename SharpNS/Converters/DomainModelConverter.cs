@@ -1,7 +1,7 @@
 ﻿using SharpNS.Models.API;
 using SharpNS.Models.Database;
 
-namespace SharpNS.Convertes
+namespace SharpNS.Converters
 {
     public static class DomainModelConverter
     {
