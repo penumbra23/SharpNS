@@ -32,7 +32,7 @@ namespace SharpNS.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Domain")
+                    b.HasIndex("Domain", "Type")
                         .IsUnique();
 
                     b.ToTable("Records");

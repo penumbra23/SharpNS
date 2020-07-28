@@ -22,9 +22,9 @@ namespace SharpNS.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Records_Domain",
+                name: "IX_Records_Domain_Type",
                 table: "Records",
-                column: "Domain",
+                columns: new[] { "Domain", "Type" },
                 unique: true);
         }
 
