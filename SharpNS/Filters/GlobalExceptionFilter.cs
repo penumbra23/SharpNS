@@ -37,9 +37,15 @@ namespace SharpNS.Filters
                     switch((updateEx.InnerException as SqliteException).SqliteErrorCode)
                     {
                         case 19:
-                            code = 409;
-                            err.Type = ApiException.GetErrorType(409);
-                            err.Message = "Record with DNS domain already exists.";
+                            int detailErr = (updateEx.InnerException as SqliteException).SqliteExtendedErrorCode;
+                            switch (detailErr)
+                            {
+                                case 2067:
+                                    code = 409;
+                                    err.Type = ApiException.GetErrorType(409);
+                                    err.Message = "Record with DNS domain already exists.";
+                                    break;
+                            }
                             break;
                         default:
                             code = 500;
