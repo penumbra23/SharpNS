@@ -1,6 +1,7 @@
 ﻿using DNS.Protocol;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -31,7 +32,11 @@ namespace SharpNS.Models.Database
         public IQueryable<Record> MatchDomainQuery(string query, RecordType type) =>
             Records.FromSqlRaw("SELECT * FROM Records WHERE Domain REGEXP {0} AND Type = {1}", query, type);
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.UseSqlite("Data Source=dns.db");
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            Directory.CreateDirectory("./data");
+            optionsBuilder.UseSqlite("Data Source=data/dns.db");
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

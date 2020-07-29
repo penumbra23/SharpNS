@@ -1,3 +1,0 @@
-﻿FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
-WORKDIR /App
-COPY SharpNS/bin/Release/netcoreapp3.1/publish/ .
