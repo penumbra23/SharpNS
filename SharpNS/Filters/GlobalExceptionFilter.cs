@@ -1,10 +1,11 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using SharpNS.Exceptions;
 using SharpNS.Models.API;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SharpNS.Filters
 {
@@ -32,6 +33,18 @@ namespace SharpNS.Filters
                     code = apiEx.StatusCode;
                     err.Message = apiEx.Message;
                     err.Type = ApiException.GetErrorType(apiEx.StatusCode);
+                    if (apiEx.StatusCode == 422)
+                    {
+                        // Aggregate error messages in case of multiple validation errors
+                        err.Reasons = new Dictionary<string, string>();
+                        foreach(var key in context.ModelState.Keys)
+                        {
+                            err.Reasons.Add(key, 
+                                context.ModelState.GetValueOrDefault(key)?.Errors
+                                .Select(e => e.ErrorMessage)
+                                .Aggregate((a, b) => a + "; " + b));
+                        }
+                    }
                     break;
                 case DbUpdateException updateEx:
                     switch((updateEx.InnerException as SqliteException).SqliteErrorCode)
