@@ -16,7 +16,6 @@ namespace SharpNS.Filters
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
-            context.HttpContext.Response.Headers.Add("Content-Type", "application/json");
             if (context.HttpContext.Response.StatusCode == 415)
             {
                 var err = new Error()

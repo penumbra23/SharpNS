@@ -10,6 +10,7 @@ using SharpNS.Filters;
 using SharpNS.Models.Database;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace SharpNS
 {
@@ -55,6 +56,17 @@ namespace SharpNS
             dbContext.Database.Migrate();
             
             app.UseRouting();
+
+            app.Use(async (context, nextMiddleware) =>
+            {
+                context.Response.OnStarting(() =>
+                {
+                    if (!context.Response.Headers.ContainsKey("Content-Type"))
+                        context.Response.Headers.Add("Content-Type", "application/json");
+                    return Task.FromResult(0);
+                });
+                await nextMiddleware();
+            });
 
             app.UseEndpoints(endpoints =>
             {
