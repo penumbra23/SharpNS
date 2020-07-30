@@ -10,7 +10,7 @@ namespace SharpNS.Models.API
         [Domain]
         public string Domain { get; set; }
 
-        [Required(ErrorMessage = "'type' is a required field.")]
+        [RequiredEnum(ErrorMessage = "'type' is a required field.")]
         public RecordType Type { get; set; }
     }
 }

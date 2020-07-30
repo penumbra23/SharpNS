@@ -21,10 +21,12 @@ namespace SharpNS
 
             services.AddControllers(options =>
             {
+                options.Filters.Add(new MediaTypeResouceFilter());
                 options.Filters.Add(new GlobalExceptionFilter());
             })
             .ConfigureApiBehaviorOptions(options =>
             {
+                options.SuppressMapClientErrors = true;
                 options.InvalidModelStateResponseFactory = ctx =>
                 {
                     var actCtx = new ActionExecutedContext(ctx, new List<IFilterMetadata>(), null)
