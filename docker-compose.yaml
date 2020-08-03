@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  sharpns:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      app-network:
+        # Set fixed IP address for DNS server
+        ipv4_address: "172.10.0.2"
+  
+  cli:
+    image: penumbra23/yant-cli:1.1
+    networks:
+      - app-network
+    # This command changes the github IP address and inserts the following record:
+    # github.com    A   123.123.123.123
+    command: ["sh", "-c", "sleep 1 && yant http --target sharpns/record -h \"Content-Type: application/json\" -m POST -b '{\"domain\": \"github.com\", \"ip\": \"123.123.123.123\", \"type\": \"A\"}'"]
+    depends_on:
+    - sharpns
+  
+  cli-tester:
+    image: alpine
+    # Set the DNS server to the sharpns one
+    dns: 172.10.0.2
+    networks:
+      - app-network
+    # Using nslookup, the IP address of github should resolve to 123.123.123.123 instead of the real address
+    # while google.com should default to the fallback DNS server 8.8.8.8
+    command: ["sh", "-c", "sleep 2 && nslookup github.com && nslookup google.com"]
+    depends_on:
+      - cli
+
+networks:
+  app-network:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.10.0.0/24"
