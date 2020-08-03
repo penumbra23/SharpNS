@@ -1,3 +1,4 @@
+
 # SharpNS
 
  DNS server with RESTful API for managing records.
@@ -22,7 +23,19 @@ docker build -t dns-image .
 docker run -p 80:80 dns-image
 ```
 
-or use the public one from DockerHub (LINK HERE).
+or use the public one from [DockerHub](https://hub.docker.com/r/penumbra23/sharpns).
+
+## Docker Compose example
+
+For running the example given by the `docker-compose` file, **first** make sure to delete the existing network, by simply running:
+
+`docker-compose down`
+
+After that run the example with:
+
+`docker-compose up`
+
+The `cli-tester` services uses the `sharpns` image as the desired DNS server. The CLI should printout the queried DNS records, both from the service and Google's public DNS server **8.8.8.8**.
 
 ## License
 MIT
